@@ -347,15 +347,42 @@ body {
   pointer-events: none;
 }
 
-.gender-buttons {
+.gender-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.gender-group legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.gender-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
-.choice-btn {
+.gender-option {
   position: relative;
-  z-index: 1;
+}
+
+/* 라디오 input은 시각적으로만 숨기고 label 영역 안에 두어 키보드 접근성을 유지 */
+.gender-input {
+  position: absolute;
+  opacity: 0;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.gender-btn {
   min-height: 70px;
   border: 2.5px solid var(--border);
   border-radius: var(--radius-md);
@@ -367,62 +394,31 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  touch-action: manipulation;
-  transition: transform 0.12s ease, box-shadow 0.15s ease;
+  user-select: none;
 }
 
-.choice-btn * {
-  pointer-events: none;
-}
-
-.choice-btn:hover {
+.gender-btn:hover {
   border-color: var(--primary);
   background: #eff6ff;
 }
 
-.choice-btn:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 2px;
-}
-
-.choice-btn.is-unselected {
-  opacity: 0.72;
-}
-
-.choice-btn.is-selected,
-.choice-btn.is-selected:hover {
-  border: 3px solid #1e40af;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #ffffff;
-  opacity: 1;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.32);
-  transform: translateY(-2px);
-}
-
-.choice-btn.is-selected span:not(.choice-check) {
-  color: #ffffff;
-}
-
-.choice-emoji {
-  font-size: 1.7rem;
-}
-
-.choice-check {
-  display: none;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #ffffff;
+.gender-input:checked + .gender-btn {
+  border-color: #2563eb;
+  background: #dbeafe;
   color: #1d4ed8;
-  font-size: 0.85rem;
-  font-weight: 900;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
 }
 
-.choice-btn.is-selected .choice-check {
-  display: inline-flex;
+.gender-input:checked + .gender-btn::before {
+  content: "✓ ";
+  font-weight: 900;
+}
+
+.gender-input:focus-visible + .gender-btn {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
 }
 
 .gender-status-pill {
@@ -1440,6 +1436,7 @@ body {
     padding: 18px 16px;
   }
   .form-grid,
+  .gender-options,
   .paps-inputs-row,
   .captured-previews,
   .posture-result-columns,

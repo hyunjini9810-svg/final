@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=4" />
+    <link rel="stylesheet" href="style.css?v=5" />
   </head>
   <body>
     <div class="app-shell">
@@ -162,38 +162,36 @@
                 <p id="err-name" class="field-error" role="alert" hidden></p>
               </div>
 
-              <!-- 성별 선택 버튼 -->
+              <!-- 성별 선택 (HTML 기본 라디오 버튼) -->
               <div class="field-group field-full">
-                <span class="field-label">성별 <span class="required-dot">*필수</span></span>
-                <div class="gender-buttons" id="gender-buttons" role="radiogroup" aria-label="성별 선택">
-                  <button
-                    type="button"
-                    class="choice-btn"
-                    id="btn-gender-male"
-                    data-gender="남"
-                    role="radio"
-                    aria-checked="false"
-                  >
-                    <span class="choice-emoji" aria-hidden="true">👦</span>
-                    <span>남학생</span>
-                    <span class="choice-check" aria-hidden="true">✓ 선택됨</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="choice-btn"
-                    id="btn-gender-female"
-                    data-gender="여"
-                    role="radio"
-                    aria-checked="false"
-                  >
-                    <span class="choice-emoji" aria-hidden="true">👧</span>
-                    <span>여학생</span>
-                    <span class="choice-check" aria-hidden="true">✓ 선택됨</span>
-                  </button>
-                </div>
-                <p id="gender-selected-status" class="gender-status-pill">
-                  선택된 성별: 아직 고르지 않았어요
-                </p>
+                <fieldset class="gender-group" id="gender-group">
+                  <legend class="field-label">성별 <span class="required-dot">*필수</span></legend>
+
+                  <div class="gender-options">
+                    <div class="gender-option">
+                      <input
+                        type="radio"
+                        id="gender-male"
+                        name="gender"
+                        value="남"
+                        class="gender-input"
+                      />
+                      <label for="gender-male" class="gender-btn">👦 남학생</label>
+                    </div>
+
+                    <div class="gender-option">
+                      <input
+                        type="radio"
+                        id="gender-female"
+                        name="gender"
+                        value="여"
+                        class="gender-input"
+                      />
+                      <label for="gender-female" class="gender-btn">👧 여학생</label>
+                    </div>
+                  </div>
+                </fieldset>
+                <span id="gender-status" class="gender-status-pill">선택된 성별: 아직 고르지 않았어요</span>
                 <p id="err-gender" class="field-error" role="alert" hidden></p>
               </div>
             </form>
@@ -603,8 +601,8 @@
     </div>
 
     <!-- 기준표 데이터 파일 (선생님께서 이 파일을 수정하여 기준 변경 가능) -->
-    <script src="standards.js?v=4"></script>
+    <script src="standards.js?v=5"></script>
     <!-- 메인 앱 로직 -->
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
   </body>
 </html>
