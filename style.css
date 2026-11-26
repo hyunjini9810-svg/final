@@ -370,7 +370,7 @@ body {
   gap: 10px;
   cursor: pointer;
   touch-action: manipulation;
-  transition: all 0.2s ease;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
 }
 
 .choice-btn * {
@@ -399,6 +399,10 @@ body {
   opacity: 1;
   box-shadow: 0 8px 20px rgba(37, 99, 235, 0.32);
   transform: translateY(-2px);
+}
+
+.choice-btn.is-selected span:not(.choice-check) {
+  color: #ffffff;
 }
 
 .choice-emoji {
