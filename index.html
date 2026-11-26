@@ -1,13 +1,574 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>final</title>
+    <title>내 몸 건강 체크 | 서울연가초등학교 5학년</title>
+    <!-- 초등학생이 읽기 편한 둥글고 친근한 한글 웹폰트 (오프라인 시 시스템 고딕으로 자동 대체) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="app-shell">
+      <!-- 상단 앱 헤더 -->
+      <header class="app-header">
+        <div class="header-top">
+          <div class="brand">
+            <span class="brand-emoji" aria-hidden="true">🩺</span>
+            <div>
+              <h1 class="app-title">내 몸 건강 체크</h1>
+              <p class="app-subtitle">서울연가초등학교 5학년 스스로 건강·체력 진단</p>
+            </div>
+          </div>
+          <div class="privacy-badge" title="서버로 전송하지 않습니다">
+            🔒 내 기기에서만 계산 (서버 전송 없음)
+          </div>
+        </div>
+
+        <!-- 6단계 진행 표시줄 -->
+        <nav class="progress-nav" aria-label="진단 단계 진행 표시줄">
+          <ol class="progress-steps" id="progress-steps">
+            <li class="progress-item is-active" data-step="1">
+              <button type="button" class="progress-btn" data-step-target="1">
+                <span class="step-num">1</span>
+                <span class="step-label">학생 정보</span>
+              </button>
+            </li>
+            <li class="progress-item" data-step="2">
+              <button type="button" class="progress-btn" data-step-target="2">
+                <span class="step-num">2</span>
+                <span class="step-label">키·몸무게</span>
+              </button>
+            </li>
+            <li class="progress-item" data-step="3">
+              <button type="button" class="progress-btn" data-step-target="3">
+                <span class="step-num">3</span>
+                <span class="step-label">PAPS 입력</span>
+              </button>
+            </li>
+            <li class="progress-item" data-step="4">
+              <button type="button" class="progress-btn" data-step-target="4">
+                <span class="step-num">4</span>
+                <span class="step-label">자세 촬영</span>
+              </button>
+            </li>
+            <li class="progress-item" data-step="5">
+              <button type="button" class="progress-btn" data-step-target="5">
+                <span class="step-num">5</span>
+                <span class="step-label">검진 결과</span>
+              </button>
+            </li>
+            <li class="progress-item" data-step="6">
+              <button type="button" class="progress-btn" data-step-target="6">
+                <span class="step-num">6</span>
+                <span class="step-label">일주일 운동</span>
+              </button>
+            </li>
+          </ol>
+        </nav>
+      </header>
+
+      <main class="main-content">
+        <!-- ================================================================
+             1단계: 학생 정보 입력
+             ================================================================ -->
+        <section id="step-1" class="step-section is-active" aria-labelledby="step1-title">
+          <div class="card hero-card">
+            <div class="step-badge">1단계 / 6단계</div>
+            <h2 id="step1-title" class="section-title">👋 반가워요! 내 정보를 입력해 볼까요?</h2>
+            <p class="section-desc">
+              내 몸의 체력과 자세를 스스로 확인하고, 나에게 꼭 맞는 일주일 운동 계획을 세워 보아요.
+            </p>
+
+            <!-- 보호자 동의 및 개인정보 보호 안내 -->
+            <div class="notice-box notice-info">
+              <div class="notice-icon" aria-hidden="true">🛡️</div>
+              <div class="notice-text">
+                <strong>보호자와 함께 확인해 주세요!</strong>
+                <p>
+                  이 앱은 <strong>보호자 동의를 받은 후</strong> 사용해 주세요. 입력하는 키·몸무게·체력 기록과
+                  카메라 영상은 인터넷 서버로 전송되거나 저장되지 않고, <strong>내 기기 화면 안에서만</strong>
+                  계산됩니다.
+                </p>
+              </div>
+            </div>
+
+            <form id="form-step-1" class="form-grid" novalidate>
+              <!-- 고정 학교 / 학년 -->
+              <div class="field-group">
+                <label class="field-label" for="input-school">학교</label>
+                <input
+                  id="input-school"
+                  type="text"
+                  class="text-input is-fixed"
+                  value="서울연가초등학교"
+                  readonly
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="input-grade">학년</label>
+                <input
+                  id="input-grade"
+                  type="text"
+                  class="text-input is-fixed"
+                  value="5학년"
+                  readonly
+                />
+              </div>
+
+              <!-- 반 선택 (숫자) -->
+              <div class="field-group">
+                <label class="field-label" for="input-class">
+                  반 <span class="required-dot">*필수</span>
+                </label>
+                <select id="input-class" class="select-input" required>
+                  <option value="">몇 반인지 골라 주세요</option>
+                </select>
+              </div>
+
+              <!-- 이름 입력 -->
+              <div class="field-group">
+                <label class="field-label" for="input-name">
+                  이름 <span class="required-dot">*필수</span>
+                </label>
+                <input
+                  id="input-name"
+                  type="text"
+                  class="text-input"
+                  placeholder="예: 김연가"
+                  maxlength="20"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+
+              <!-- 성별 선택 버튼 -->
+              <div class="field-group field-full">
+                <span class="field-label">성별 <span class="required-dot">*필수</span></span>
+                <div class="gender-buttons" role="group" aria-label="성별 선택">
+                  <button type="button" class="choice-btn" id="btn-gender-male" data-gender="male">
+                    <span class="choice-emoji">👦</span>
+                    <span>남학생</span>
+                  </button>
+                  <button type="button" class="choice-btn" id="btn-gender-female" data-gender="female">
+                    <span class="choice-emoji">👧</span>
+                    <span>여학생</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <div id="step1-error" class="error-banner" role="alert" hidden></div>
+
+            <div class="step-actions step-actions-end">
+              <button type="button" class="btn btn-primary btn-lg" id="btn-step1-next">
+                다음 단계로 (키·몸무게) 👉
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             2단계: 키·몸무게 입력과 BMI 결과
+             ================================================================ -->
+        <section id="step-2" class="step-section" aria-labelledby="step2-title" hidden>
+          <div class="card">
+            <div class="step-badge">2단계 / 6단계</div>
+            <h2 id="step2-title" class="section-title">📏 키와 몸무게를 입력해 주세요</h2>
+            <p class="section-desc">
+              소수점 첫째 자리까지 적을 수 있어요. (예: 키 145.5cm, 몸무게 38.2kg)
+            </p>
+
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="input-height">
+                  키 (cm) <span class="required-dot">*100 ~ 200cm</span>
+                </label>
+                <div class="input-with-unit">
+                  <input
+                    id="input-height"
+                    type="number"
+                    class="text-input"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="100"
+                    max="200"
+                    placeholder="예: 145.5"
+                  />
+                  <span class="unit-tag">cm</span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="input-weight">
+                  몸무게 (kg) <span class="required-dot">*15 ~ 120kg</span>
+                </label>
+                <div class="input-with-unit">
+                  <input
+                    id="input-weight"
+                    type="number"
+                    class="text-input"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="15"
+                    max="120"
+                    placeholder="예: 38.2"
+                  />
+                  <span class="unit-tag">kg</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-btn-row">
+              <button type="button" class="btn btn-secondary" id="btn-calc-bmi">
+                ✨ 내 BMI(체질량지수) 확인하기
+              </button>
+            </div>
+
+            <div id="step2-error" class="error-banner" role="alert" hidden></div>
+
+            <!-- BMI 판정 결과 큰 카드 -->
+            <div id="bmi-result-card" class="bmi-result-card" hidden>
+              <div class="bmi-main-row">
+                <div class="bmi-emoji" id="bmi-emoji">🌟</div>
+                <div class="bmi-score-box">
+                  <span class="bmi-caption">나의 체질량지수 (BMI = 몸무게 ÷ 키²)</span>
+                  <div class="bmi-value-line">
+                    <strong id="bmi-value-display">0.0</strong>
+                    <span class="bmi-unit">kg/m²</span>
+                  </div>
+                </div>
+                <div class="bmi-badge-wrap">
+                  <span class="bmi-status-badge" id="bmi-status-badge">정상체중</span>
+                  <span class="bmi-detail-note" id="bmi-detail-note"></span>
+                </div>
+              </div>
+
+              <!-- 4구간/5구간 시각 바 -->
+              <div class="bmi-meter" aria-label="BMI 구간 표시">
+                <div class="bmi-meter-seg seg-under">저체중</div>
+                <div class="bmi-meter-seg seg-normal">정상체중</div>
+                <div class="bmi-meter-seg seg-over">과체중(비만 주의)</div>
+                <div class="bmi-meter-seg seg-obese">비만</div>
+              </div>
+
+              <p class="bmi-encouragement" id="bmi-encouragement"></p>
+              <p class="bmi-source-note" id="bmi-standard-note"></p>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-outline" id="btn-step2-prev">
+                👈 이전 단계
+              </button>
+              <button type="button" class="btn btn-primary btn-lg" id="btn-step2-next">
+                다음 단계로 (PAPS 입력) 👉
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             3단계: PAPS 기록 입력과 등급 판정
+             ================================================================ -->
+        <section id="step-3" class="step-section" aria-labelledby="step3-title" hidden>
+          <div class="card">
+            <div class="step-badge">3단계 / 6단계</div>
+            <h2 id="step3-title" class="section-title">🏅 PAPS(학생건강체력평가) 기록을 입력해요</h2>
+            <p class="section-desc">
+              5개 영역마다 우리 학교에서 측정한 종목을 고르고 기록을 적어 보세요.
+              <strong>1등급(아주 높음)</strong>이 가장 높고 <strong>5등급(아주 낮음)</strong>까지 있어요!
+            </p>
+
+            <!-- 등급 범례 -->
+            <div class="grade-legend" aria-label="PAPS 등급 설명">
+              <span class="legend-pill grade-1">🏆 1등급 아주 높음</span>
+              <span class="legend-pill grade-2">⭐ 2등급 높음</span>
+              <span class="legend-pill grade-3">👍 3등급 보통</span>
+              <span class="legend-pill grade-4">💪 4등급 낮음</span>
+              <span class="legend-pill grade-5">🌱 5등급 아주 낮음</span>
+            </div>
+
+            <!-- 5개 영역 입력 카드 컨테이너 (app.js가 standards.js 기반으로 생성) -->
+            <div id="paps-areas-container" class="paps-areas-grid"></div>
+
+            <!-- 향후 20점/100점 점수 환산 확장 구조 안내 -->
+            <div id="paps-score-structure-box" class="notice-box notice-soft"></div>
+
+            <div id="step3-error" class="error-banner" role="alert" hidden></div>
+
+            <p class="source-footer">
+              출처: 학생건강체력평가제(PAPS) 초등 5학년 기준표, 최신 기준은 교육부 학생건강정보센터(schoolhealth.kr) 확인
+            </p>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-outline" id="btn-step3-prev">
+                👈 이전 단계
+              </button>
+              <button type="button" class="btn btn-primary btn-lg" id="btn-step3-next">
+                다음 단계로 (자세 촬영) 👉
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             4단계: 웹캠 자세 촬영과 AI 자세 분석
+             ================================================================ -->
+        <section id="step-4" class="step-section" aria-labelledby="step4-title" hidden>
+          <div class="card">
+            <div class="step-badge">4단계 / 6단계</div>
+            <h2 id="step4-title" class="section-title">📸 AI로 바른 자세를 확인해 보아요</h2>
+            <p class="section-desc">
+              웹캠으로 <strong>정면</strong>과 <strong>옆모습</strong> 두 장을 찍어 어깨, 골반, 목의 균형을 살펴보아요.
+            </p>
+
+            <!-- 촬영 전 안내 체크리스트 -->
+            <div class="posture-guide-box">
+              <h3>📋 촬영 전에 꼭 확인해요!</h3>
+              <ul class="guide-list">
+                <li>📏 카메라와 <strong>2~3m 거리</strong>를 두고 서 주세요.</li>
+                <li>🧍 <strong>머리부터 발끝까지 전신</strong>이 화면 안에 다 들어오게 서 주세요.</li>
+                <li>👕 몸의 선이 잘 보이도록 <strong>몸에 알맞게 붙는 옷</strong>을 입으면 더 정확해요.</li>
+                <li>🙆 <strong>정면 촬영</strong>: 발을 어깨너비로 벌리고 양팔을 편하게 내려 정면을 보아요.</li>
+                <li>🚶 <strong>옆모습 촬영</strong>: 왼쪽 또는 오른쪽 옆으로 돌아서 정면을 보듯 바르게 서요.</li>
+              </ul>
+              <p class="privacy-mini">
+                🔒 촬영된 영상은 밖으로 전송하거나 저장하지 않고, 지금 브라우저 안에서만 AI가 분석해요.
+              </p>
+            </div>
+
+            <!-- 촬영 단계 전환 버튼 (정면 / 옆모습) -->
+            <div class="capture-tabs" role="tablist" aria-label="촬영 방향 선택">
+              <button type="button" class="capture-tab is-active" id="tab-front" data-pose-mode="front">
+                1️⃣ 정면 촬영 <span id="badge-front-done" class="tab-done" hidden>완료 ✅</span>
+              </button>
+              <button type="button" class="capture-tab" id="tab-side" data-pose-mode="side">
+                2️⃣ 옆모습 촬영 <span id="badge-side-done" class="tab-done" hidden>완료 ✅</span>
+              </button>
+            </div>
+
+            <!-- 카메라 권한 거부 / 미지원 안내 -->
+            <div id="camera-error-box" class="error-banner" role="alert" hidden></div>
+
+            <!-- 웹캠 + 스켈레톤 오버레이 스테이지 -->
+            <div class="camera-stage-wrap">
+              <div class="camera-stage" id="camera-stage">
+                <video id="posture-video" autoplay playsinline muted></video>
+                <canvas id="posture-overlay-canvas"></canvas>
+
+                <!-- 카메라 꺼짐 대기 화면 -->
+                <div class="camera-placeholder" id="camera-placeholder">
+                  <div class="placeholder-emoji">🎥</div>
+                  <p>아래 <strong>[카메라 켜기]</strong> 버튼을 누르면 AI 자세 안내선이 나타나요.</p>
+                  <p class="placeholder-sub">카메라가 없거나 사용이 어려우면 건너뛰기를 눌러도 돼요!</p>
+                </div>
+
+                <!-- 카운트다운 오버레이 -->
+                <div class="countdown-overlay" id="countdown-overlay" hidden>
+                  <span id="countdown-number">3</span>
+                </div>
+
+                <!-- 실시간 전신 인식 상태 배지 -->
+                <div class="pose-live-status" id="pose-live-status">
+                  카메라 대기 중
+                </div>
+              </div>
+
+              <!-- 카메라 제어 버튼 -->
+              <div class="camera-controls">
+                <button type="button" class="btn btn-secondary" id="btn-start-camera">
+                  📷 카메라 켜기
+                </button>
+
+                <label class="timer-select-label" for="select-countdown">
+                  타이머:
+                  <select id="select-countdown" class="select-mini">
+                    <option value="3" selected>3초 뒤 촬영</option>
+                    <option value="5">5초 뒤 촬영</option>
+                    <option value="0">바로 촬영</option>
+                  </select>
+                </label>
+
+                <button type="button" class="btn btn-primary" id="btn-capture-pose" disabled>
+                  📸 정면 촬영하기
+                </button>
+
+                <button type="button" class="btn btn-outline" id="btn-skip-posture">
+                  ⏭️ 건너뛰기 (미측정)
+                </button>
+              </div>
+            </div>
+
+            <!-- 전신 미인식 등 재촬영 안내 -->
+            <div id="step4-warning" class="error-banner" role="alert" hidden></div>
+
+            <!-- 촬영된 정면·옆모습 결과 미리보기 -->
+            <div class="captured-previews">
+              <div class="preview-card" id="preview-card-front">
+                <div class="preview-header">
+                  <h4>1) 정면 촬영 결과</h4>
+                  <button type="button" class="btn-link" id="btn-retake-front" hidden>다시 찍기 🔄</button>
+                </div>
+                <div class="preview-img-box" id="preview-front-box">
+                  <span class="preview-empty">아직 정면을 촬영하지 않았어요</span>
+                </div>
+                <div class="preview-metrics" id="preview-front-metrics"></div>
+              </div>
+
+              <div class="preview-card" id="preview-card-side">
+                <div class="preview-header">
+                  <h4>2) 옆모습 촬영 결과</h4>
+                  <button type="button" class="btn-link" id="btn-retake-side" hidden>다시 찍기 🔄</button>
+                </div>
+                <div class="preview-img-box" id="preview-side-box">
+                  <span class="preview-empty">아직 옆모습을 촬영하지 않았어요</span>
+                </div>
+                <div class="preview-metrics" id="preview-side-metrics"></div>
+              </div>
+            </div>
+
+            <div class="notice-box notice-caution">
+              <div class="notice-icon" aria-hidden="true">🩺</div>
+              <div class="notice-text">
+                이 결과는 선별 참고용이며 의학적 진단이 아닙니다. 척추 측만증 의심이 나오면 보건 선생님이나 병원에서 확인하세요.
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-outline" id="btn-step4-prev">
+                👈 이전 단계
+              </button>
+              <button type="button" class="btn btn-primary btn-lg" id="btn-step4-next">
+                다음 단계로 (검진 결과 보기) 👉
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             5단계: 종합 검진 결과 화면
+             ================================================================ -->
+        <section id="step-5" class="step-section printable-step" aria-labelledby="step5-title" hidden>
+          <div class="card">
+            <div class="step-badge no-print">5단계 / 6단계</div>
+            <div class="report-header-banner">
+              <div>
+                <h2 id="step5-title" class="section-title">📊 나의 건강·체력 검진 결과</h2>
+                <p class="student-summary-line" id="result-student-info"></p>
+              </div>
+              <div class="report-export-btns no-print">
+                <button type="button" class="btn btn-outline btn-sm" id="btn-print-step5">
+                  🖨️ 인쇄하기
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-save-img-step5">
+                  🖼️ 이미지 저장
+                </button>
+              </div>
+            </div>
+
+            <!-- 1) BMI + PAPS 요약 그리드 -->
+            <div class="results-grid">
+              <!-- BMI 카드 -->
+              <article class="result-panel" id="result-bmi-panel"></article>
+
+              <!-- PAPS 차트 및 등급 카드 -->
+              <article class="result-panel result-panel-wide" id="result-paps-panel"></article>
+            </div>
+
+            <!-- 2) 자세 분석 결과 카드 -->
+            <article class="result-panel result-posture-panel" id="result-posture-panel"></article>
+
+            <!-- 3) 잘한 점 & 더 키울 점 요약 -->
+            <article class="strength-weakness-panel" id="result-summary-panel"></article>
+
+            <div class="step-actions no-print">
+              <button type="button" class="btn btn-outline" id="btn-step5-prev">
+                👈 이전 단계
+              </button>
+              <button type="button" class="btn btn-primary btn-lg" id="btn-step5-next">
+                다음 단계로 (일주일 운동 스케줄) 👉
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             6단계: 일주일 운동 스케줄 추천 (서울 7330 기준)
+             ================================================================ -->
+        <section id="step-6" class="step-section printable-step" aria-labelledby="step6-title" hidden>
+          <div class="card">
+            <div class="step-badge no-print">6단계 / 6단계</div>
+            <div class="report-header-banner">
+              <div>
+                <h2 id="step6-title" class="section-title">🗓️ 나만의 일주일 운동 스케줄 (서울 7330)</h2>
+                <p class="section-desc" id="schedule-intro-text"></p>
+              </div>
+              <div class="report-export-btns no-print">
+                <button type="button" class="btn btn-outline btn-sm" id="btn-print-step6">
+                  🖨️ 인쇄하기
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-save-img-step6">
+                  🖼️ 이미지 저장
+                </button>
+              </div>
+            </div>
+
+            <!-- 맞춤 추천 이유 / 주의 안내 배너 -->
+            <div id="schedule-personal-banners" class="schedule-banners"></div>
+
+            <!-- 모두 양호할 때 좋아하는 운동 고르기 박스 -->
+            <div id="favorite-sport-picker" class="favorite-picker no-print" hidden>
+              <h3>🌟 체력이 아주 좋네요! 이번 주에 하고 싶은 운동을 골라 볼까요?</h3>
+              <div class="favorite-chips" id="favorite-chips"></div>
+            </div>
+
+            <!-- 주간 실천 현황 바 -->
+            <div class="weekly-tracker-bar">
+              <div class="tracker-text">
+                ✅ 이번 주 운동 실천: <strong id="weekly-done-count">0</strong> /
+                <strong id="weekly-target-count">3</strong>일 완료!
+              </div>
+              <div class="tracker-progress-bg">
+                <div class="tracker-progress-fill" id="weekly-progress-fill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- 월~일 7일 달력 -->
+            <div class="schedule-grid" id="schedule-grid"></div>
+
+            <!-- 서울 7330 큰 슬로건 배너 -->
+            <div class="seoul-7330-banner">
+              🏃‍♀️ 서울 7330: 일주일 3번 이상, 하루 30분 이상 운동하기 🏃‍♂️
+            </div>
+
+            <div class="step-actions no-print">
+              <button type="button" class="btn btn-outline" id="btn-step6-prev">
+                👈 이전 단계 (검진 결과)
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-restart-app">
+                🔄 처음부터 다시 진단하기
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app-footer no-print">
+        <p>
+          서울연가초등학교 5학년 건강체력 자가 진단 웹앱 · 모든 입력 정보와 영상은 기기 안에서만 처리됩니다.
+        </p>
+      </footer>
+    </div>
+
+    <!-- 기준표 데이터 파일 (선생님께서 이 파일을 수정하여 기준 변경 가능) -->
+    <script src="standards.js"></script>
+    <!-- 메인 앱 로직 -->
+    <script src="app.js"></script>
   </body>
 </html>
