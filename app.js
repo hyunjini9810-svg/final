@@ -17,17 +17,28 @@
   // 1. 순수 계산 및 판정 함수 (테스트 및 화면 양쪽에서 사용)
   // --------------------------------------------------------------------------
 
+  function normalizeGenderKey(gender) {
+    if (gender === "남" || gender === "male") return "male";
+    if (gender === "여" || gender === "female") return "female";
+    return "";
+  }
+
+  function getGenderLabelKo(gender) {
+    return normalizeGenderKey(gender) === "male" ? "남학생" : "여학생";
+  }
+
   /**
    * 키(cm)와 몸무게(kg)로 BMI 계산 및 5학년 성별 기준 판정
    * - 경계값 빈틈이 없도록 ordered max 비교 사용
    */
   function evaluateBmi(heightCm, weightKg, gender) {
+    const genderKey = normalizeGenderKey(gender);
     const heightM = heightCm / 100;
     const rawBmi = weightKg / (heightM * heightM);
     // 소수점 첫째 자리로 반올림 (표시 및 경계값 일관성 유지)
     const bmi = Math.round(rawBmi * 10) / 10;
 
-    const brackets = STANDARDS.bmi[gender];
+    const brackets = STANDARDS.bmi[genderKey];
     let matched = brackets[brackets.length - 1];
     for (let i = 0; i < brackets.length; i++) {
       const b = brackets[i];
@@ -76,7 +87,8 @@
       };
     }
 
-    const table = foundEvent.thresholds[gender];
+    const genderKey = normalizeGenderKey(gender);
+    const table = foundEvent.thresholds[genderKey];
     if (!table) {
       return {
         pending: true,
@@ -361,7 +373,6 @@
   const $ = (id) => document.getElementById(id);
 
   function initApp() {
-    populateClassOptions();
     bindNavigationEvents();
     bindStep1Events();
     bindStep2Events();
@@ -369,16 +380,6 @@
     bindStep4Events();
     bindResultAndScheduleEvents();
     goToStep(1);
-  }
-
-  function populateClassOptions() {
-    const select = $("input-class");
-    for (let c = 1; c <= STANDARDS.schoolInfo.maxClassNumber; c++) {
-      const opt = document.createElement("option");
-      opt.value = String(c);
-      opt.textContent = `${c}반`;
-      select.appendChild(opt);
-    }
   }
 
   // --------------------------------------------------------------------------
@@ -440,37 +441,114 @@
   // --------------------------------------------------------------------------
   // 5. 1단계: 학생 정보 입력 및 검증
   // --------------------------------------------------------------------------
+  function setFieldError(errId, inputEl, message) {
+    const errEl = $(errId);
+    if (errEl) {
+      if (message) {
+        errEl.textContent = message;
+        errEl.hidden = false;
+      } else {
+        errEl.textContent = "";
+        errEl.hidden = true;
+      }
+    }
+    if (inputEl) {
+      inputEl.classList.toggle("is-invalid", Boolean(message));
+    }
+  }
+
   function bindStep1Events() {
+    const form = $("form-step-1");
+    const classSelect = $("input-class");
+    const nameInput = $("input-name");
+    const genderGroup = $("gender-buttons");
     const maleBtn = $("btn-gender-male");
     const femaleBtn = $("btn-gender-female");
 
+    if (form) {
+      form.addEventListener("submit", (e) => e.preventDefault());
+    }
+
     const selectGender = (g) => {
       state.student.gender = g;
-      maleBtn.classList.toggle("is-selected", g === "male");
-      femaleBtn.classList.toggle("is-selected", g === "female");
+      const isMale = g === "남";
+      const isFemale = g === "여";
+      maleBtn.classList.toggle("is-selected", isMale);
+      femaleBtn.classList.toggle("is-selected", isFemale);
+      maleBtn.setAttribute("aria-checked", isMale ? "true" : "false");
+      femaleBtn.setAttribute("aria-checked", isFemale ? "true" : "false");
+      setFieldError("err-gender", null, "");
       hideBanner($("step1-error"));
     };
 
-    maleBtn.addEventListener("click", () => selectGender("male"));
-    femaleBtn.addEventListener("click", () => selectGender("female"));
+    // 이벤트 위임으로 마우스 클릭 / 모바일 터치 모두 확실하게 처리
+    genderGroup.addEventListener("click", (e) => {
+      const btn = e.target.closest(".choice-btn[data-gender]");
+      if (!btn) return;
+      selectGender(btn.dataset.gender);
+    });
+
+    // 키보드 좌우 화살표 및 Enter/Space 지원 (라디오 그룹 접근성)
+    genderGroup.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        selectGender("남");
+        maleBtn.focus();
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        selectGender("여");
+        femaleBtn.focus();
+      }
+    });
+
+    classSelect.addEventListener("change", () => {
+      state.student.classNum = classSelect.value.trim();
+      if (state.student.classNum) {
+        setFieldError("err-class", classSelect, "");
+        hideBanner($("step1-error"));
+      }
+    });
+
+    nameInput.addEventListener("input", () => {
+      const trimmed = nameInput.value.trim();
+      state.student.name = trimmed;
+      if (trimmed.length >= 1) {
+        setFieldError("err-name", nameInput, "");
+        hideBanner($("step1-error"));
+      }
+    });
 
     $("btn-step1-next").addEventListener("click", () => {
-      const classNum = $("input-class").value.trim();
-      const name = $("input-name").value.trim();
+      const classNum = classSelect.value.trim();
+      const name = nameInput.value.trim();
       const gender = state.student.gender;
 
+      let firstInvalidEl = null;
+
       if (!classNum) {
-        showBanner($("step1-error"), "😊 몇 반인지 숫자를 먼저 골라 주세요!");
-        $("input-class").focus();
-        return;
+        setFieldError("err-class", classSelect, "반을 골라 주세요");
+        if (!firstInvalidEl) firstInvalidEl = classSelect;
+      } else {
+        setFieldError("err-class", classSelect, "");
       }
-      if (!name) {
-        showBanner($("step1-error"), "😊 이름을 입력해야 다음 단계로 넘어갈 수 있어요!");
-        $("input-name").focus();
-        return;
+
+      if (name.length < 1) {
+        setFieldError("err-name", nameInput, "이름을 입력해 주세요");
+        if (!firstInvalidEl) firstInvalidEl = nameInput;
+      } else {
+        setFieldError("err-name", nameInput, "");
       }
+
       if (!gender) {
-        showBanner($("step1-error"), "😊 남학생 또는 여학생 버튼을 눌러 성별을 선택해 주세요!");
+        setFieldError("err-gender", null, "성별을 선택해 주세요");
+        if (!firstInvalidEl) firstInvalidEl = maleBtn;
+      } else {
+        setFieldError("err-gender", null, "");
+      }
+
+      if (firstInvalidEl) {
+        showBanner($("step1-error"), "😊 빠진 항목을 확인해 주세요!");
+        firstInvalidEl.focus();
         return;
       }
 
@@ -559,7 +637,7 @@
       res.displayLabel === "비만" ? `(세부 기준: ${res.detailLabel})` : "";
     $("bmi-encouragement").textContent = res.message;
 
-    const genderText = state.student.gender === "male" ? "남학생" : "여학생";
+    const genderText = getGenderLabelKo(state.student.gender);
     $("bmi-standard-note").textContent = `적용 기준: 초등 5학년 ${genderText} 체질량지수(BMI) 기준표`;
 
     // 구간 바 활성화 표시
@@ -1364,7 +1442,7 @@
 
   function renderStep5Results() {
     const s = state.student;
-    const genderKo = s.gender === "male" ? "남학생" : "여학생";
+    const genderKo = getGenderLabelKo(s.gender);
     $("result-student-info").textContent = `${s.school} ${s.grade}학년 ${s.classNum}반 ${s.name} (${genderKo})`;
 
     // 1) BMI 패널
@@ -1898,7 +1976,7 @@
     ctx.fillText("내 몸 건강 체크 - 종합 결과 & 서울 7330 스케줄", 44, 58);
 
     const s = state.student;
-    const gKo = s.gender === "male" ? "남학생" : "여학생";
+    const gKo = getGenderLabelKo(s.gender);
     ctx.font = "bold 22px 'Noto Sans KR', sans-serif";
     ctx.fillText(`${s.school} ${s.grade}학년 ${s.classNum}반 ${s.name} (${gKo})`, 44, 102);
 
@@ -2008,5 +2086,9 @@
     el.hidden = true;
   }
 
-  document.addEventListener("DOMContentLoaded", initApp);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+  } else {
+    initApp();
+  }
 })();

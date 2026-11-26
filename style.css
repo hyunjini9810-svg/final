@@ -317,6 +317,11 @@ body {
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
+.select-input option {
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
 .text-input.is-fixed {
   background: #f1f5f9;
   color: #334155;
@@ -349,6 +354,8 @@ body {
 }
 
 .choice-btn {
+  position: relative;
+  z-index: 1;
   min-height: 70px;
   border: 2.5px solid var(--border);
   border-radius: var(--radius-md);
@@ -362,7 +369,12 @@ body {
   justify-content: center;
   gap: 10px;
   cursor: pointer;
+  touch-action: manipulation;
   transition: all 0.2s ease;
+}
+
+.choice-btn * {
+  pointer-events: none;
 }
 
 .choice-btn:hover {
@@ -370,15 +382,48 @@ body {
   background: #eff6ff;
 }
 
+.choice-btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .choice-btn.is-selected {
-  border-color: var(--primary);
+  border: 3px solid var(--primary-dark);
   background: #dbeafe;
   color: var(--primary-dark);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.16);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
 }
 
 .choice-emoji {
   font-size: 1.7rem;
+}
+
+.choice-check {
+  display: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary-dark);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 900;
+  align-items: center;
+  justify-content: center;
+}
+
+.choice-btn.is-selected .choice-check {
+  display: inline-flex;
+}
+
+.field-error {
+  margin: 2px 0 0;
+  color: #dc2626;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.is-invalid {
+  border-color: #dc2626 !important;
 }
 
 /* ---------------- 버튼 ---------------- */

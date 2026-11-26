@@ -15,7 +15,7 @@ const HEALTH_STANDARDS = {
   schoolInfo: {
     schoolName: "서울연가초등학교",
     grade: 5,
-    maxClassNumber: 15, // 반 선택 최대 번호 (1반 ~ 15반)
+    maxClassNumber: 12, // 반 선택 최대 번호 (1반 ~ 12반)
   },
 
   // 입력값 현실 범위 검사 기준 (2단계 키·몸무게)

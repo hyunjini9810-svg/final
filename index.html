@@ -128,8 +128,21 @@
                   반 <span class="required-dot">*필수</span>
                 </label>
                 <select id="input-class" class="select-input" required>
-                  <option value="">몇 반인지 골라 주세요</option>
+                  <option value="" disabled selected>몇 반인지 골라 주세요</option>
+                  <option value="1">1반</option>
+                  <option value="2">2반</option>
+                  <option value="3">3반</option>
+                  <option value="4">4반</option>
+                  <option value="5">5반</option>
+                  <option value="6">6반</option>
+                  <option value="7">7반</option>
+                  <option value="8">8반</option>
+                  <option value="9">9반</option>
+                  <option value="10">10반</option>
+                  <option value="11">11반</option>
+                  <option value="12">12반</option>
                 </select>
+                <p id="err-class" class="field-error" role="alert" hidden></p>
               </div>
 
               <!-- 이름 입력 -->
@@ -146,21 +159,39 @@
                   autocomplete="off"
                   required
                 />
+                <p id="err-name" class="field-error" role="alert" hidden></p>
               </div>
 
               <!-- 성별 선택 버튼 -->
               <div class="field-group field-full">
                 <span class="field-label">성별 <span class="required-dot">*필수</span></span>
-                <div class="gender-buttons" role="group" aria-label="성별 선택">
-                  <button type="button" class="choice-btn" id="btn-gender-male" data-gender="male">
-                    <span class="choice-emoji">👦</span>
+                <div class="gender-buttons" id="gender-buttons" role="radiogroup" aria-label="성별 선택">
+                  <button
+                    type="button"
+                    class="choice-btn"
+                    id="btn-gender-male"
+                    data-gender="남"
+                    role="radio"
+                    aria-checked="false"
+                  >
+                    <span class="choice-emoji" aria-hidden="true">👦</span>
                     <span>남학생</span>
+                    <span class="choice-check" aria-hidden="true">✓</span>
                   </button>
-                  <button type="button" class="choice-btn" id="btn-gender-female" data-gender="female">
-                    <span class="choice-emoji">👧</span>
+                  <button
+                    type="button"
+                    class="choice-btn"
+                    id="btn-gender-female"
+                    data-gender="여"
+                    role="radio"
+                    aria-checked="false"
+                  >
+                    <span class="choice-emoji" aria-hidden="true">👧</span>
                     <span>여학생</span>
+                    <span class="choice-check" aria-hidden="true">✓</span>
                   </button>
                 </div>
+                <p id="err-gender" class="field-error" role="alert" hidden></p>
               </div>
             </form>
 
