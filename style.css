@@ -387,11 +387,18 @@ body {
   outline-offset: 2px;
 }
 
-.choice-btn.is-selected {
-  border: 3px solid var(--primary-dark);
-  background: #dbeafe;
-  color: var(--primary-dark);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+.choice-btn.is-unselected {
+  opacity: 0.72;
+}
+
+.choice-btn.is-selected,
+.choice-btn.is-selected:hover {
+  border: 3px solid #1e40af;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  opacity: 1;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.32);
+  transform: translateY(-2px);
 }
 
 .choice-emoji {
@@ -400,12 +407,11 @@ body {
 
 .choice-check {
   display: none;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--primary-dark);
-  color: #ffffff;
-  font-size: 0.95rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-size: 0.85rem;
   font-weight: 900;
   align-items: center;
   justify-content: center;
@@ -413,6 +419,36 @@ body {
 
 .choice-btn.is-selected .choice-check {
   display: inline-flex;
+}
+
+.gender-status-pill {
+  margin: 4px 0 0;
+  display: inline-block;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--text-sub);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.gender-status-pill.is-chosen {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1.5px solid #93c5fd;
+}
+
+.student-context-pill {
+  display: inline-block;
+  margin: 0 0 10px 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1.5px solid #a7f3d0;
+  font-size: 0.9rem;
+  font-weight: 800;
 }
 
 .field-error {

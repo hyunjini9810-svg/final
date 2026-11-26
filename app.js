@@ -411,7 +411,10 @@
       item.classList.toggle("is-done", s < stepNum);
     });
 
-    if (stepNum === 3) {
+    if (stepNum === 2) {
+      updateStepStudentBadges();
+    } else if (stepNum === 3) {
+      updateStepStudentBadges();
       syncStep3BmiLink();
       recalcAllPapsUI();
     } else if (stepNum === 5) {
@@ -457,6 +460,22 @@
     }
   }
 
+  function updateStepStudentBadges() {
+    const s = state.student;
+    if (!s.name || !s.gender) return;
+    const text = `👤 ${s.grade}학년 ${s.classNum}반 ${s.name} · ${getGenderLabelKo(s.gender)} 기준 적용 중`;
+    const b2 = $("step2-student-badge");
+    const b3 = $("step3-student-badge");
+    if (b2) {
+      b2.textContent = text;
+      b2.hidden = false;
+    }
+    if (b3) {
+      b3.textContent = text;
+      b3.hidden = false;
+    }
+  }
+
   function bindStep1Events() {
     const form = $("form-step-1");
     const classSelect = $("input-class");
@@ -464,6 +483,7 @@
     const genderGroup = $("gender-buttons");
     const maleBtn = $("btn-gender-male");
     const femaleBtn = $("btn-gender-female");
+    const genderStatus = $("gender-selected-status");
 
     if (form) {
       form.addEventListener("submit", (e) => e.preventDefault());
@@ -474,9 +494,19 @@
       const isMale = g === "남";
       const isFemale = g === "여";
       maleBtn.classList.toggle("is-selected", isMale);
+      maleBtn.classList.toggle("is-unselected", isFemale);
       femaleBtn.classList.toggle("is-selected", isFemale);
+      femaleBtn.classList.toggle("is-unselected", isMale);
       maleBtn.setAttribute("aria-checked", isMale ? "true" : "false");
       femaleBtn.setAttribute("aria-checked", isFemale ? "true" : "false");
+
+      if (genderStatus) {
+        genderStatus.textContent = isMale
+          ? "✅ 선택된 성별: 👦 남학생 (선택됨)"
+          : "✅ 선택된 성별: 👧 여학생 (선택됨)";
+        genderStatus.classList.add("is-chosen");
+      }
+
       setFieldError("err-gender", null, "");
       hideBanner($("step1-error"));
     };

@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=3" />
   </head>
   <body>
     <div class="app-shell">
@@ -176,7 +176,7 @@
                   >
                     <span class="choice-emoji" aria-hidden="true">👦</span>
                     <span>남학생</span>
-                    <span class="choice-check" aria-hidden="true">✓</span>
+                    <span class="choice-check" aria-hidden="true">✓ 선택됨</span>
                   </button>
                   <button
                     type="button"
@@ -188,9 +188,12 @@
                   >
                     <span class="choice-emoji" aria-hidden="true">👧</span>
                     <span>여학생</span>
-                    <span class="choice-check" aria-hidden="true">✓</span>
+                    <span class="choice-check" aria-hidden="true">✓ 선택됨</span>
                   </button>
                 </div>
+                <p id="gender-selected-status" class="gender-status-pill">
+                  선택된 성별: 아직 고르지 않았어요
+                </p>
                 <p id="err-gender" class="field-error" role="alert" hidden></p>
               </div>
             </form>
@@ -211,6 +214,7 @@
         <section id="step-2" class="step-section" aria-labelledby="step2-title" hidden>
           <div class="card">
             <div class="step-badge">2단계 / 6단계</div>
+            <div class="student-context-pill" id="step2-student-badge" hidden></div>
             <h2 id="step2-title" class="section-title">📏 키와 몸무게를 입력해 주세요</h2>
             <p class="section-desc">
               소수점 첫째 자리까지 적을 수 있어요. (예: 키 145.5cm, 몸무게 38.2kg)
@@ -310,6 +314,7 @@
         <section id="step-3" class="step-section" aria-labelledby="step3-title" hidden>
           <div class="card">
             <div class="step-badge">3단계 / 6단계</div>
+            <div class="student-context-pill" id="step3-student-badge" hidden></div>
             <h2 id="step3-title" class="section-title">🏅 PAPS(학생건강체력평가) 기록을 입력해요</h2>
             <p class="section-desc">
               5개 영역마다 우리 학교에서 측정한 종목을 고르고 기록을 적어 보세요.
@@ -598,8 +603,8 @@
     </div>
 
     <!-- 기준표 데이터 파일 (선생님께서 이 파일을 수정하여 기준 변경 가능) -->
-    <script src="standards.js"></script>
+    <script src="standards.js?v=3"></script>
     <!-- 메인 앱 로직 -->
-    <script src="app.js"></script>
+    <script src="app.js?v=3"></script>
   </body>
 </html>
