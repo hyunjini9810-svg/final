@@ -494,11 +494,9 @@
   }
 
   function restoreStep1GenderState() {
-    const maleRadio = $("gender-male");
-    const femaleRadio = $("gender-female");
-    if (!maleRadio || !femaleRadio) return;
-    maleRadio.checked = state.student.gender === "남";
-    femaleRadio.checked = state.student.gender === "여";
+    const genderSelect = $("input-gender");
+    if (!genderSelect) return;
+    genderSelect.value = state.student.gender || "";
     syncGenderStatusUI(state.student.gender);
   }
 
@@ -506,17 +504,15 @@
     const form = $("form-step-1");
     const classSelect = $("input-class");
     const nameInput = $("input-name");
-    const maleRadio = $("gender-male");
-    const femaleRadio = $("gender-female");
+    const genderSelect = $("input-gender");
     const genderStatus = $("gender-status");
     const nextBtn = $("btn-step1-next");
 
-    if (!classSelect || !nameInput || !maleRadio || !femaleRadio || !genderStatus || !nextBtn) {
+    if (!classSelect || !nameInput || !genderSelect || !genderStatus || !nextBtn) {
       console.error("[1단계 초기화 오류] 필수 입력 요소를 찾지 못했습니다.", {
         classSelect: Boolean(classSelect),
         nameInput: Boolean(nameInput),
-        maleRadio: Boolean(maleRadio),
-        femaleRadio: Boolean(femaleRadio),
+        genderSelect: Boolean(genderSelect),
         genderStatus: Boolean(genderStatus),
         nextBtn: Boolean(nextBtn),
       });
@@ -527,15 +523,15 @@
       form.addEventListener("submit", (e) => e.preventDefault());
     }
 
-    // 기본 라디오(change) 이벤트로 성별 상태 저장 및 문구 갱신
-    [maleRadio, femaleRadio].forEach((radio) => {
-      radio.addEventListener("change", () => {
-        if (!radio.checked) return;
-        state.student.gender = radio.value;
-        syncGenderStatusUI(radio.value);
-        setFieldError("err-gender", null, "");
+    // 성별 드롭다운 change 이벤트로 상태 저장 및 문구 갱신
+    genderSelect.addEventListener("change", () => {
+      const selected = genderSelect.value.trim();
+      state.student.gender = selected;
+      syncGenderStatusUI(selected);
+      if (selected) {
+        setFieldError("err-gender", genderSelect, "");
         hideBanner($("step1-error"));
-      });
+      }
     });
 
     classSelect.addEventListener("change", () => {
@@ -558,8 +554,7 @@
     nextBtn.addEventListener("click", () => {
       const classNum = classSelect.value.trim();
       const name = nameInput.value.trim();
-      const checkedRadio = document.querySelector('input[name="gender"]:checked');
-      const gender = checkedRadio ? checkedRadio.value : state.student.gender;
+      const gender = genderSelect.value.trim();
 
       let firstInvalidEl = null;
 
@@ -578,10 +573,10 @@
       }
 
       if (!gender) {
-        setFieldError("err-gender", null, "성별을 선택해 주세요");
-        if (!firstInvalidEl) firstInvalidEl = maleRadio;
+        setFieldError("err-gender", genderSelect, "성별을 선택해 주세요");
+        if (!firstInvalidEl) firstInvalidEl = genderSelect;
       } else {
-        setFieldError("err-gender", null, "");
+        setFieldError("err-gender", genderSelect, "");
       }
 
       if (firstInvalidEl) {
